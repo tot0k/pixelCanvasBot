@@ -47,7 +47,11 @@ def load(path):
 	except:
 		print("Le fichier n'existe pas.")
 
-def generateWaitList(xDep,yDep,grid):
+def generateWaitList():
+	path = "7arg.txt" #input("fichier a importer ? ")
+	grid = load(path)
+	xDep = -58 #int(input("X depart : "))
+	yDep = 2090 #int(input("Y depart : "))
 	file = open("waitList.txt",'w',encoding="utf-8")
 	for y in range(len(grid)):
 		for x in range(len(grid[0])):
@@ -69,15 +73,7 @@ def modifyWaitList(liste):
 		file.write(str(l[0]) + ',' + str(l[1]) + ',' + str(l[2] + '\n'))
 	file.close()
 
-path = "qr.txt" #input("fichier a importer ? ")
-grid = load(path)
-xDep = -200 #int(input("X depart : "))
-yDep = 2150 #int(input("Y depart : "))
-
-#generateWaitList(xDep,yDep,grid)
-
 while 1:
-	generateWaitList()
 	liste = getWaitList()
 	while len(liste)!=0:
 		placed = False
@@ -93,3 +89,4 @@ while 1:
 				print("could not place {:2} at {};{} (try n°{})".format(liste[0][2],liste[0][0],liste[0][1],tryNB),end="\r")
 				tryNB+=1
 			sleep(5)
+	generateWaitList()
