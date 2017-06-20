@@ -34,7 +34,7 @@ def place_pixel(x, y, color, config=config):
 def load(path):
 	global grid, graphGrid
 	try:
-		print(path)
+		print("img/" + path)
 		f = open(path,'r', encoding="utf-8")
 		grid = []
 		nb=0

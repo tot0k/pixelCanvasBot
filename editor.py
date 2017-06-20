@@ -66,6 +66,7 @@ def changeTileType(event):
 # Enregistre un labyrinthe dans un fichier
 def save(path):
 	global grid
+	path = "img/" + path
 	file = open(path,'w',encoding="utf-8")
 	for y in grid:
 		for x in y:
@@ -79,6 +80,7 @@ def save(path):
 def load(path):
 	global grid, graphGrid
 	try:
+		path = "img/" + path
 		print(path)
 		f = open(path,'r', encoding="utf-8")
 		grid = []
@@ -229,5 +231,5 @@ if __name__ == '__main__':
 	global grid, graphGrid
 	grid, graphGrid = [[0 for j in range(20)] for i in range(20)],[[0 for j in range(20)] for i in range(20)]
 	initInterface()
-	load("default.txt")
+	load("img/default.txt")
 	fen.mainloop()
