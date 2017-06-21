@@ -3,6 +3,13 @@ import requests
 from addict import Dict
 from time import sleep
 
+'''
+TODO: 
+HUD
+verify fingerprint (erreur de placement)
+alert try +10 (have to do the captcha)
+client disconection when connected --> server crash
+'''
 api = Dict()
 
 api.base = 'http://pixelcanvas.io'
@@ -11,51 +18,57 @@ api.online = '/api/online'
 
 config = Dict()
 
-config.fingerprint = "40a2ac6fa4b378a0512762058a5bec98"
+config.fingerprint = "40a2ac6fa4b378a0512762058a5bec98" # Your Fingerprint
 config.token = 'null'
 config.api = api
 
-host = "localhost"
+host = "localhost" # You'r server IP
 port = 1111
+token = "user"
 
 def connect(s,host,port,retry=1):
 	connected = False
 	try:
-		print("try")
 		s.connect((host, port))
-		print("connected !")
+		print("[INFO] Connected to the server.")
 		connected = True
 	except ConnectionRefusedError:
-		print("Connection refused")
 		if retry<5:
-			print("Retrying (try n°{})".format(retry+1))
-			connected = connect(host,port,retry+1)
-		else:
-			print("Le serveur distant n'est pas joignable.")
+			print("[INFO] Trying to reach server (try n°{})".format(retry+1))
+			connected = connect(s,host,port,retry+1)
 	finally:return connected
 
-def getPixel(host,port):
+def getPixel(host,port,token):
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	connected = connect(s,host,port)
 	if connected:
-		s.send("getPixel".encode())
+		s.send("getPixel token:{}".format(token).encode())
 		r = s.recv(9999999)
 		s.close()
-		print(r.decode())
-		if r.decode() != "None":
+		if r.decode() != "None" and r.decode().split(' ')[0] != "[ERROR]":
+			print("[INFO] trying to place pixel {}".format(r.decode()))
 			return r.decode().split(',')
-		else:
-			return None
+		else:return None
 	else:
-		print("Could not connect to the server.")
+		print("[ERROR] Could not connect to the server.")
 
-def placed(pixel):
+def placedPixel(pixel,token):
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	connected = connect(s,host,port)
 	if connected:
-		data = ','.join(pixel)
+		data = "placed token:{},x:{},y:{},color:{}".format(token,pixel[0],pixel[1],pixel[2])
 		s.send(data.encode())
-		r = s.recv(9999999)
+		r = s.recv(65536)
+		print(r.decode())
+		s.close()
+
+def generate(path,x,y,token):
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	connected = connect(s,host,port)
+	if connected:
+		data = "generate token:{},x:{},y:{},path:{}".format(token,x,y,path)
+		s.send(data.encode())
+		r = s.recv(65536)
 		print(r.decode())
 		s.close()
 
@@ -76,33 +89,24 @@ def placePixel(x, y, color, config=config):
 		return "Token Requested"
 	return False
 
-'''	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	connected = connect("localhost",1111)
-	if connected:
-		print("Enter command : ")
-		file_name = input(">> ")
-		s.send(file_name.encode())
-		r = s.recv(9999999)
-		s.close()
-		print(r.decode(),end="\n{}\n".format("-"*15))'''
+#generate("qr.txt",235,2000,token)
 
 waitListEmpty = False
 while not waitListEmpty:
 	placed = False
 	tryNB = 1
+	pixel = getPixel(host,port,token)
 
 	while not placed:
-		pixel = getPixel(host,port)
 		if pixel==None:
 			waitListEmpty, placed = True,True
-			print("Dessin terminé")
 		else:
 			placed = placePixel(pixel[0],pixel[1],pixel[2],config)
 			if placed:
-				print("placed {:2} at {};{}\t\t\t\t".format(pixel[2],pixel[0],pixel[1]))
-				placedPixel(pixel)
+				print("[INFO] Placed {:2} at {};{}\t\t\t\t".format(pixel[2],pixel[0],pixel[1]))
+				placedPixel(pixel,token)
 				sleep(25)
 			else:
-				print("could not place {:2} at {};{} (try n°{})".format(pixel[2],pixel[0],pixel[1],tryNB),end="\r")
+				print("[ERROR] Could not place {:2} at {};{} (try n°{})".format(pixel[2],pixel[0],pixel[1],tryNB))
 				tryNB+=1
 			sleep(5)
