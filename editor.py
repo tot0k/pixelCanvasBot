@@ -1,5 +1,6 @@
 from tkinter import *
 from time import time
+import os
 
 WIDTH = 1920
 HEIGHT = 1000
@@ -67,6 +68,7 @@ def changeTileType(event):
 def save(path):
 	global grid
 	path = "img/" + path
+	os.makedirs(os.path.dirname(path), exist_ok=True)
 	file = open(path,'w',encoding="utf-8")
 	for y in grid:
 		for x in y:
@@ -127,17 +129,8 @@ def bordures():
 		borderValue=0
 
 	main.delete(ALL)
-	nettoyer()
 	drawGrid(len(graphGrid[0]),len(graphGrid))
 
-
-def nettoyer():
-	for y in range(len(grid)):
-		for x in range(len(grid[0])):
-			if grid[y][x] == 2 or grid[y][x] == 5:
-				grid[y][x] = 1
-				changeState(x,y,1)
-	main.update()
 
 
 def initInterface():
