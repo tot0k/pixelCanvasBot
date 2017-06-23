@@ -15,6 +15,7 @@ api = Dict()
 api.base = 'http://pixelcanvas.io'
 api.pixel = '/api/pixel'
 api.online = '/api/online'
+api.bigchunk = '/api/bigchunk'
 
 config = Dict()
 
@@ -89,7 +90,7 @@ def placePixel(x, y, color, config=config):
 		return "Token Requested"
 	return False
 
-#generate("qr.txt",235,2000,token)
+#generate("default.txt",-200,2150,token)
 
 waitListEmpty = False
 while not waitListEmpty:
