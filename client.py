@@ -23,7 +23,7 @@ config.fingerprint = "40a2ac6fa4b378a0512762058a5bec98" # Your Fingerprint
 config.token = 'null'
 config.api = api
 
-host = "localhost" # You'r server IP
+host = "2.9.55.24" # Your server's IP
 port = 1111
 token = "user"
 
@@ -90,7 +90,7 @@ def placePixel(x, y, color, config=config):
 		return "Token Requested"
 	return False
 
-#generate("default.txt",-200,2150,token)
+#generate("reno.txt",214,2492,token)
 
 waitListEmpty = False
 while not waitListEmpty:
@@ -104,10 +104,10 @@ while not waitListEmpty:
 		else:
 			placed = placePixel(pixel[0],pixel[1],pixel[2],config)
 			if placed:
-				print("[INFO] Placed {:2} at {};{}\t\t\t\t".format(pixel[2],pixel[0],pixel[1]))
+				print("[INFO] Placed {} at {};{}\t\t\t\t".format(pixel[2],pixel[0],pixel[1]))
 				placedPixel(pixel,token)
 				sleep(25)
 			else:
-				print("[ERROR] Could not place {:2} at {};{} (try n°{})".format(pixel[2],pixel[0],pixel[1],tryNB))
+				print("[ERROR] Could not place {} at {};{} (try n°{})".format(pixel[2],pixel[0],pixel[1],tryNB))
 				tryNB+=1
 			sleep(5)
