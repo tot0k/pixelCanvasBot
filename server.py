@@ -27,7 +27,7 @@ class ClientThread(threading.Thread):
 		data = dict((k.strip(), v.strip()) for k,v in (item.split(':') for item in rUtf8.split(" ")[1].split(',')))
 
 		if data['token'] in tokens or data['token'] in admins:
-			print("token accepté")
+			print("token {} accepted".format(data['token']))
 			if command == "getPixel":
 				self.getPixel()
 
@@ -53,16 +53,16 @@ class ClientThread(threading.Thread):
 
 	def getPixel(self):
 		global waitList
-		print("getPixel")
 		if len(waitList)>0:
 			data = waitList[randint(0,len(waitList)-1)]
+			print("getPixel > {}".format(",".join(data)))
 			self.clientsocket.send(",".join(data).encode())
 		else:
 			self.clientsocket.send("None".encode())
 
 	def pixelPlaced(self,data):
-		print("Pixel placed")
 		pixel = [data['x'],data['y'],data['color']]
+		print("Pixel placed > {}".format(pixel))
 		try:
 			waitList.pop(waitList.index(pixel))
 			print("pixel deleted from waitList")

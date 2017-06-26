@@ -19,11 +19,11 @@ api.bigchunk = '/api/bigchunk'
 
 config = Dict()
 
-config.fingerprint = "40a2ac6fa4b378a0512762058a5bec98" # Your Fingerprint
+config.fingerprint = "159cc045cee690316fda86c3614adc3e" # Your Fingerprint
 config.token = 'null'
 config.api = api
 
-host = "2.9.55.24" # Your server's IP
+host = "localhost" # Your server's IP
 port = 1111
 token = "user"
 
@@ -34,7 +34,7 @@ def connect(s,host,port,retry=1):
 		print("[INFO] Connected to the server.")
 		connected = True
 	except ConnectionRefusedError:
-		if retry<5:
+		if retry<10:
 			print("[INFO] Trying to reach server (try n°{})".format(retry+1))
 			connected = connect(s,host,port,retry+1)
 	finally:return connected
@@ -106,8 +106,8 @@ while not waitListEmpty:
 			if placed:
 				print("[INFO] Placed {} at {};{}\t\t\t\t".format(pixel[2],pixel[0],pixel[1]))
 				placedPixel(pixel,token)
-				sleep(25)
+				sleep(35)
 			else:
 				print("[ERROR] Could not place {} at {};{} (try n°{})".format(pixel[2],pixel[0],pixel[1],tryNB))
 				tryNB+=1
-			sleep(5)
+			sleep(10)
